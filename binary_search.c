@@ -28,7 +28,7 @@ int main()
    int search, size;
    search = 8;
    size = 10;
-   printf("%d", binaryFind(search, key, size));
+   printf("The number %d is in position %d", search, binaryFind(search, key, size));
 
    return 0;
    
