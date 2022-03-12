@@ -1,10 +1,11 @@
-/** Make by Pham Quoc Trung, Dang Truong An and Tran Trong Duc. Please do not copy!**/
-/** Work best with VSCode **/
+/** Make by Pham Quoc Trung, Dang Truong An and Tran Trong Duc. Please do not copy! **/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <windows.h>
+#include <stdbool.h>
 
 
 struct contact
@@ -17,8 +18,7 @@ struct contact
 	char WorkingAddress[100];
 	char HomeAddress[100];
 	int day, month, year;
-}prf;
-
+};
 
 void print_menu();
 void add_contact();
@@ -32,6 +32,23 @@ int checkPhoneNumber();
 int checkEmpty();
 void birthday_display();
 void selection_date_sort();
+HWND WINAPI GetConsoleWindowNT();
+void DisableResizeWindow();
+
+
+void DisableCtrButton(bool Close, bool Min, bool Max)
+{
+    HWND hWnd = GetConsoleWindow();
+    HMENU hMenu = GetSystemMenu(hWnd, false);
+    
+    if (Close == 1)
+        DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
+    if (Min == 1)
+        DeleteMenu(hMenu, SC_MINIMIZE, MF_BYCOMMAND);
+    if (Max == 1)
+        DeleteMenu(hMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+}
+
 
 
 int main()
@@ -39,7 +56,11 @@ int main()
 	char choice;
 	do
 	{
-		printf("\033[38;5;231m");
+		// printf("\033[38;5;85m");
+		HWND hWnd=GetConsoleWindowNT();
+    	MoveWindow(hWnd,0,0,1040,500,TRUE);
+		DisableResizeWindow();
+		DisableCtrButton(0,0,1);
         system("title XLR8@IA1701:~$ Contact Keeper");
         system("cls"); 
 		print_menu();
@@ -119,6 +140,7 @@ int main()
 }
 
 
+
 void print_menu()
 {
 
@@ -152,6 +174,7 @@ void add_contact()
 {
 	FILE *ct;
 	int check;
+	struct contact prf;
 
     ct = fopen("contact.txt", "a+");
 	
@@ -214,25 +237,26 @@ void add_contact()
 
 void display_contact()
 {
-	
+	struct contact prf1;
  	FILE *ct;
  	ct = fopen("contact.txt", "r");
 	
-	char a[20][20], temp[20];
+	char a[20][20], b[20][20], temp[20];
 	int count = 0, i, j;
 	
 	while (fscanf(ct, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
- 					&prf.FirstName,
-					&prf.LastName,
-					&prf.Company,
-					&prf.PhoneNumber,
-					&prf.Email,
-					&prf.WorkingAddress,
-					&prf.HomeAddress,
-					&prf.day, &prf.month, &prf.year) == 10)
+ 					&prf1.FirstName,
+					&prf1.LastName,
+					&prf1.Company,
+					&prf1.PhoneNumber,
+					&prf1.Email,
+					&prf1.WorkingAddress,
+					&prf1.HomeAddress,
+					&prf1.day, &prf1.month, &prf1.year) == 10)
 
 			{
-			strcpy(a[count], prf.FirstName);
+			strcpy(a[count], prf1.FirstName);
+			strcpy(b[count], prf1.PhoneNumber);
   			count++;
 			}
 		
@@ -243,6 +267,10 @@ void display_contact()
 							strcpy(temp, a[j]);
 							strcpy(a[j], a[j+1]);
 							strcpy(a[j+1], temp);
+
+							strcpy(temp, b[j]);
+							strcpy(b[j], b[j+1]);
+							strcpy(b[j+1], temp);
             			}
 
 			printf(" -------------------------------------------------------------------------------------------------------------------------------------\n"); 
@@ -253,25 +281,25 @@ void display_contact()
  				{
   				rewind(ct);
   				while (fscanf(ct, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
-								&prf.FirstName,
-								&prf.LastName,
-								&prf.Company,
-								&prf.PhoneNumber,
-								&prf.Email,
-								&prf.WorkingAddress,
-								&prf.HomeAddress,
-								&prf.day, &prf.month, &prf.year) == 10)
+								&prf1.FirstName,
+								&prf1.LastName,
+								&prf1.Company,
+								&prf1.PhoneNumber,
+								&prf1.Email,
+								&prf1.WorkingAddress,
+								&prf1.HomeAddress,
+								&prf1.day, &prf1.month, &prf1.year) == 10)
   					{
-   						if (strcmp(a[i], prf.FirstName) == 0)
+   						if (strcmp(a[i], prf1.FirstName) == 0 && strcmp(b[i], prf1.PhoneNumber) == 0)
     					printf("|%11s %11s %17s %14s %29s %17s %14s   %02d/%02d/%d |\n", 
-									prf.FirstName,
-									prf.LastName,
-									prf.Company,
-									prf.PhoneNumber,
-									prf.Email,
-									prf.WorkingAddress,
-									prf.HomeAddress,
-									prf.day, prf.month, prf.year );
+									prf1.FirstName,
+									prf1.LastName,
+									prf1.Company,
+									prf1.PhoneNumber,
+									prf1.Email,
+									prf1.WorkingAddress,
+									prf1.HomeAddress,
+									prf1.day, prf1.month, prf1.year );
 
   					}
 			
@@ -283,6 +311,7 @@ void display_contact()
 void search_contact()
 {
 	FILE *ct;
+	struct contact prf2;
 	int check;
 	char pn[12], pqt[12];
  	printf("\n| Enter the Phone Number you want to search: ");
@@ -297,27 +326,27 @@ void search_contact()
 		printf("|First Name   Last Name           Company   Phone Number                          Email   Working Address   Home Address     Birthday |\n");
 		printf(" -------------------------------------------------------------------------------------------------------------------------------------\n");
   		while (fscanf(ct, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
- 					&prf.FirstName,
-					&prf.LastName,
-					&prf.Company,
-					&prf.PhoneNumber,
-					&prf.Email,
-					&prf.WorkingAddress,
-					&prf.HomeAddress,
-					&prf.day, &prf.month, &prf.year) == 10)
+ 					&prf2.FirstName,
+					&prf2.LastName,
+					&prf2.Company,
+					&prf2.PhoneNumber,
+					&prf2.Email,
+					&prf2.WorkingAddress,
+					&prf2.HomeAddress,
+					&prf2.day, &prf2.month, &prf2.year) == 10)
   			{
-  	 			strcpy(pqt, prf.PhoneNumber);
+  	 			strcpy(pqt, prf2.PhoneNumber);
    				if (strcmp(pqt, pn) == 0)
    					{
     				printf("|%10s %11s %17s %14s %30s %17s %14s   %02d/%02d/%d |\n", 
-					prf.FirstName,
-					prf.LastName,
-					prf.Company,
-					prf.PhoneNumber,
-					prf.Email,
-					prf.WorkingAddress,
-					prf.HomeAddress,
-					prf.day, prf.month, prf.year );
+					prf2.FirstName,
+					prf2.LastName,
+					prf2.Company,
+					prf2.PhoneNumber,
+					prf2.Email,
+					prf2.WorkingAddress,
+					prf2.HomeAddress,
+					prf2.day, prf2.month, prf2.year );
    					}
   			}
   	fclose(ct);
@@ -330,6 +359,7 @@ void edit_contact()
 {
 	FILE *cto;
 	FILE *ctt;
+	struct contact prf3;
 	int check, choice;
 	char pn[12], pqt[12];
 	printf("\n| Enter the Phone Number of the contact you want to edit: ");
@@ -342,26 +372,26 @@ void edit_contact()
 		cto = fopen("contact.txt", "r");
 		ctt = fopen("temp_contact.txt", "w");
 		while (fscanf(cto, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
- 					&prf.FirstName,
-					&prf.LastName,
-					&prf.Company,
-					&prf.PhoneNumber,
-					&prf.Email,
-					&prf.WorkingAddress,
-					&prf.HomeAddress,
-					&prf.day, &prf.month, &prf.year) == 10)
+ 					&prf3.FirstName,
+					&prf3.LastName,
+					&prf3.Company,
+					&prf3.PhoneNumber,
+					&prf3.Email,
+					&prf3.WorkingAddress,
+					&prf3.HomeAddress,
+					&prf3.day, &prf3.month, &prf3.year) == 10)
 			{
-			strcpy(pqt, prf.PhoneNumber);
+			strcpy(pqt, prf3.PhoneNumber);
 			if (strcmp(pqt, pn) != 0)
 				fprintf(ctt, "%s|%s|%s|%s|%s|%s|%s|%02d/%02d/%d\n",
-					prf.FirstName,
-					prf.LastName,
-					prf.Company,
-					prf.PhoneNumber,
-					prf.Email,
-					prf.WorkingAddress,
-					prf.HomeAddress,
-					prf.day, prf.month, prf.year);
+					prf3.FirstName,
+					prf3.LastName,
+					prf3.Company,
+					prf3.PhoneNumber,
+					prf3.Email,
+					prf3.WorkingAddress,
+					prf3.HomeAddress,
+					prf3.day, prf3.month, prf3.year);
 			else
 				{
 					printf("\n|\t1. Edit First Name");
@@ -379,51 +409,51 @@ void edit_contact()
 					{
 						case 1:
 							printf("| Enter First Name: ");
-							scanf("%*c%[^\n]", &prf.FirstName);
+							scanf("%*c%[^\n]", &prf3.FirstName);
 							break;
 						case 2:
 							printf("| Enter Last Name: ");
-							scanf("%*c%[^\n]", &prf.LastName);
+							scanf("%*c%[^\n]", &prf3.LastName);
 							break;
 						case 3:
 							printf("| Enter Company: ");
-							scanf("%*c%[^\n]", &prf.Company);
+							scanf("%*c%[^\n]", &prf3.Company);
 							break;
 						case 4:
 							printf("| Enter Phone Number: ");
-							scanf("%*c%[^\n]", &prf.PhoneNumber);
-							phonenum_valid(prf.PhoneNumber);
+							scanf("%*c%[^\n]", &prf3.PhoneNumber);
+							phonenum_valid(prf3.PhoneNumber);
 							break;
 						case 5:
 							printf("| Enter Email: ");
-							scanf("%*c%[^\n]", &prf.Email);
+							scanf("%*c%[^\n]", &prf3.Email);
 							break;
 						case 6:
 							printf("| Enter Working Address: ");
-							scanf("%*c%[^\n]", &prf.WorkingAddress);
+							scanf("%*c%[^\n]", &prf3.WorkingAddress);
 							break;
 						case 7:
 							printf("| Enter Home Address: ");
-							scanf("%*c%[^\n]", &prf.HomeAddress);
+							scanf("%*c%[^\n]", &prf3.HomeAddress);
 							break;
 						case 8:
 							printf("| Enter Birthday: ");
-							scanf("%d/%d/%d", &prf.day, &prf.month, &prf.year);
-							date_valid(prf.day, prf.month, prf.year);
+							scanf("%d/%d/%d", &prf3.day, &prf3.month, &prf3.year);
+							date_valid(prf3.day, prf3.month, prf3.year);
 							break;
 						default:
      						printf("| (?) Invalid Selection!");
      						break;
 					}
 					fprintf(ctt, "%s|%s|%s|%s|%s|%s|%s|%02d/%02d/%d\n",
-					prf.FirstName,
-					prf.LastName,
-					prf.Company,
-					prf.PhoneNumber,
-					prf.Email,
-					prf.WorkingAddress,
-					prf.HomeAddress,
-					prf.day, prf.month, prf.year);
+					prf3.FirstName,
+					prf3.LastName,
+					prf3.Company,
+					prf3.PhoneNumber,
+					prf3.Email,
+					prf3.WorkingAddress,
+					prf3.HomeAddress,
+					prf3.day, prf3.month, prf3.year);
 
 				}
 
@@ -433,23 +463,23 @@ void edit_contact()
 		cto = fopen("contact.txt", "w");
 		ctt = fopen("temp_contact.txt", "r");
 		while (fscanf(ctt, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
-						&prf.FirstName,
-						&prf.LastName,
-						&prf.Company,
-						&prf.PhoneNumber,
-						&prf.Email,
-						&prf.WorkingAddress,
-						&prf.HomeAddress,
-						&prf.day, &prf.month, &prf.year) == 10)
+						&prf3.FirstName,
+						&prf3.LastName,
+						&prf3.Company,
+						&prf3.PhoneNumber,
+						&prf3.Email,
+						&prf3.WorkingAddress,
+						&prf3.HomeAddress,
+						&prf3.day, &prf3.month, &prf3.year) == 10)
 				fprintf(cto, "%s|%s|%s|%s|%s|%s|%s|%02d/%02d/%d\n",
-						prf.FirstName,
-						prf.LastName,
-						prf.Company,
-						prf.PhoneNumber,
-						prf.Email,
-						prf.WorkingAddress,
-						prf.HomeAddress,
-						prf.day, prf.month, prf.year);
+						prf3.FirstName,
+						prf3.LastName,
+						prf3.Company,
+						prf3.PhoneNumber,
+						prf3.Email,
+						prf3.WorkingAddress,
+						prf3.HomeAddress,
+						prf3.day, prf3.month, prf3.year);
 		printf("\n| CONTACT UPDATED\n");
 		fclose(cto);
 		fclose(ctt);
@@ -466,6 +496,7 @@ void delete_contact()
 
 	FILE *cto;
 	FILE *ctt;
+	struct contact prf4;
 	int check, choice;
 	char pn[12], pqt[12];
 	printf("\n| Enter the Phone Number of the contact you want to delete: ");
@@ -478,27 +509,27 @@ void delete_contact()
 		cto = fopen("contact.txt", "r");
 		ctt = fopen("temp_contact.txt", "w");
 		while (fscanf(cto, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
- 					&prf.FirstName,
-					&prf.LastName,
-					&prf.Company,
-					&prf.PhoneNumber,
-					&prf.Email,
-					&prf.WorkingAddress,
-					&prf.HomeAddress,
-					&prf.day, &prf.month, &prf.year) == 10)
+ 					&prf4.FirstName,
+					&prf4.LastName,
+					&prf4.Company,
+					&prf4.PhoneNumber,
+					&prf4.Email,
+					&prf4.WorkingAddress,
+					&prf4.HomeAddress,
+					&prf4.day, &prf4.month, &prf4.year) == 10)
 		{
-		strcpy(pqt, prf.PhoneNumber);
+		strcpy(pqt, prf4.PhoneNumber);
 		if (strcmp(pqt, pn) != 0)
 			
 				fprintf(ctt, "%s|%s|%s|%s|%s|%s|%s|%02d/%02d/%d\n",
-					prf.FirstName,
-					prf.LastName,
-					prf.Company,
-					prf.PhoneNumber,
-					prf.Email,
-					prf.WorkingAddress,
-					prf.HomeAddress,
-					prf.day, prf.month, prf.year);
+					prf4.FirstName,
+					prf4.LastName,
+					prf4.Company,
+					prf4.PhoneNumber,
+					prf4.Email,
+					prf4.WorkingAddress,
+					prf4.HomeAddress,
+					prf4.day, prf4.month, prf4.year);
 		
 		}
 	
@@ -507,23 +538,23 @@ void delete_contact()
 	cto = fopen("contact.txt", "w");
 	ctt = fopen("temp_contact.txt", "r");
 	while (fscanf(ctt, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
- 					&prf.FirstName,
-					&prf.LastName,
-					&prf.Company,
-					&prf.PhoneNumber,
-					&prf.Email,
-					&prf.WorkingAddress,
-					&prf.HomeAddress,
-					&prf.day, &prf.month, &prf.year) == 10)
+ 					&prf4.FirstName,
+					&prf4.LastName,
+					&prf4.Company,
+					&prf4.PhoneNumber,
+					&prf4.Email,
+					&prf4.WorkingAddress,
+					&prf4.HomeAddress,
+					&prf4.day, &prf4.month, &prf4.year) == 10)
 			fprintf(cto, "%s|%s|%s|%s|%s|%s|%s|%02d/%02d/%d\n",
-					prf.FirstName,
-					prf.LastName,
-					prf.Company,
-					prf.PhoneNumber,
-					prf.Email,
-					prf.WorkingAddress,
-					prf.HomeAddress,
-					prf.day, prf.month, prf.year);
+					prf4.FirstName,
+					prf4.LastName,
+					prf4.Company,
+					prf4.PhoneNumber,
+					prf4.Email,
+					prf4.WorkingAddress,
+					prf4.HomeAddress,
+					prf4.day, prf4.month, prf4.year);
 	
 	printf("\n| CONTACT DELETED\n\n");
 	fclose(cto);
@@ -538,10 +569,11 @@ void birthday_display()
 {
 	FILE *cto;
 	FILE *ctt;
+	struct contact prf5;
 	cto = fopen("contact.txt", "r");
 	ctt = fopen("temp_contact.txt", "w");
 	int x, d[20], m[20], y[20], count = 0, i;
-	char c;
+	char a[20][20];
 	printf("| Enter a month: ");
 	scanf("%d", &x);
 	
@@ -552,46 +584,47 @@ void birthday_display()
 		
 
 		while (fscanf(cto, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
-									&prf.FirstName,
-									&prf.LastName,
-									&prf.Company,
-									&prf.PhoneNumber,
-									&prf.Email,
-									&prf.WorkingAddress,
-									&prf.HomeAddress,
-									&prf.day, &prf.month, &prf.year) == 10)
+									&prf5.FirstName,
+									&prf5.LastName,
+									&prf5.Company,
+									&prf5.PhoneNumber,
+									&prf5.Email,
+									&prf5.WorkingAddress,
+									&prf5.HomeAddress,
+									&prf5.day, &prf5.month, &prf5.year) == 10)
 						{
-						if (x == prf.month)
+						if (x == prf5.month)
 							{
-							d[count] = prf.day;
-							m[count] = prf.month;
-							y[count] = prf.year;
+							d[count] = prf5.day;
+							m[count] = prf5.month;
+							y[count] = prf5.year;
+							strcpy(a[count], prf5.PhoneNumber);
 							count++;
 							}
 						}
-		selection_date_sort(d, m, y, count);
+		selection_date_sort(d, m, y, a, count);
 		for (i = 0; i<count; i++)
 		{
 			rewind(cto);
 			while (fscanf(cto, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
-									&prf.FirstName,
-									&prf.LastName,
-									&prf.Company,
-									&prf.PhoneNumber,
-									&prf.Email,
-									&prf.WorkingAddress,
-									&prf.HomeAddress,
-									&prf.day, &prf.month, &prf.year) == 10)
-							if (d[i] == prf.day && m[i] == prf.month && y[i] == prf.year)
+									&prf5.FirstName,
+									&prf5.LastName,
+									&prf5.Company,
+									&prf5.PhoneNumber,
+									&prf5.Email,
+									&prf5.WorkingAddress,
+									&prf5.HomeAddress,
+									&prf5.day, &prf5.month, &prf5.year) == 10)
+							if (d[i] == prf5.day && m[i] == prf5.month && y[i] == prf5.year && strcmp(a[i], prf5.PhoneNumber) == 0 )
 								fprintf(ctt, "%s|%s|%s|%s|%s|%s|%s|%02d/%02d/%d\n",
-													prf.FirstName,
-													prf.LastName,
-													prf.Company,
-													prf.PhoneNumber,
-													prf.Email,
-													prf.WorkingAddress,
-													prf.HomeAddress,
-													prf.day, prf.month, prf.year);
+													prf5.FirstName,
+													prf5.LastName,
+													prf5.Company,
+													prf5.PhoneNumber,
+													prf5.Email,
+													prf5.WorkingAddress,
+													prf5.HomeAddress,
+													prf5.day, prf5.month, prf5.year);
 		}
 		fclose(cto);
 		fclose(ctt);
@@ -600,25 +633,25 @@ void birthday_display()
 		printf(" -------------------------------------------------------------------------------------------------------------------------------------\n");
 		ctt = fopen("temp_contact.txt", "r");
 		while (fscanf(ctt, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
-									&prf.FirstName,
-									&prf.LastName,
-									&prf.Company,
-									&prf.PhoneNumber,
-									&prf.Email,
-									&prf.WorkingAddress,
-									&prf.HomeAddress,
-									&prf.day, &prf.month, &prf.year) == 10)
+									&prf5.FirstName,
+									&prf5.LastName,
+									&prf5.Company,
+									&prf5.PhoneNumber,
+									&prf5.Email,
+									&prf5.WorkingAddress,
+									&prf5.HomeAddress,
+									&prf5.day, &prf5.month, &prf5.year) == 10)
 						{
 							
 							printf("|%11s %11s %17s %14s %29s %17s %14s   %02d/%02d/%d |\n", 
-									prf.FirstName,
-									prf.LastName,
-									prf.Company,
-									prf.PhoneNumber,
-									prf.Email,
-									prf.WorkingAddress,
-									prf.HomeAddress,
-									prf.day, prf.month, prf.year );
+									prf5.FirstName,
+									prf5.LastName,
+									prf5.Company,
+									prf5.PhoneNumber,
+									prf5.Email,
+									prf5.WorkingAddress,
+									prf5.HomeAddress,
+									prf5.day, prf5.month, prf5.year );
 
 						}
 
@@ -631,6 +664,7 @@ void birthday_display()
 
 void date_valid(int dd, int mm, int yy)
 {
+	struct contact prf6;
     if(yy>=1900 && yy<=2022)
     {
         if(mm>=1 && mm<=12)
@@ -646,23 +680,23 @@ void date_valid(int dd, int mm, int yy)
             else
                 printf("| (?) Your birthday is invalid or in wrong format!\n");
 				printf("| Re-enter your Birthday: ");
-				scanf("%d/%d/%d", &prf.day, &prf.month, &prf.year);
-				date_valid(prf.day, prf.month, prf.year);
+				scanf("%d/%d/%d", &prf6.day, &prf6.month, &prf6.year);
+				date_valid(prf6.day, prf6.month, prf6.year);
         }
         else
         {
             printf("| (?) Your birthday is invalid or in wrong format!\n");
 			printf("| Re-enter your Birthday: ");
-			scanf("%d/%d/%d", &prf.day, &prf.month, &prf.year);
-			date_valid(prf.day, prf.month, prf.year);
+			scanf("%d/%d/%d", &prf6.day, &prf6.month, &prf6.year);
+			date_valid(prf6.day, prf6.month, prf6.year);
         }
     }
     else
     {
         printf("| (?) Your birthday is invalid or in wrong format!\n");
 		printf("| Re-enter your Birthday: ");
-		scanf("%d/%d/%d", &prf.day, &prf.month, &prf.year);
-		date_valid(prf.day, prf.month, prf.year);
+		scanf("%d/%d/%d", &prf6.day, &prf6.month, &prf6.year);
+		date_valid(prf6.day, prf6.month, prf6.year);
     }
     end:;
 
@@ -671,13 +705,14 @@ void date_valid(int dd, int mm, int yy)
 
 void phonenum_valid(char str[])
 {
+	struct contact prf7;
 	int i;
 	if (strlen(str) < 9 || strlen(str) > 11)
 		{
 			printf("| (?) Invalid Phone Number!\n");
 			printf("| Re-enter your Phone Number: ");
-			scanf("%*c%[^\n]", &prf.PhoneNumber);
-			phonenum_valid(prf.PhoneNumber);
+			scanf("%*c%[^\n]", &prf7.PhoneNumber);
+			phonenum_valid(prf7.PhoneNumber);
 		}
 	else
 		{
@@ -686,8 +721,8 @@ void phonenum_valid(char str[])
 			{
 				printf("| (?) Invalid Phone Number!\n");
 				printf("| Re-enter your Phone Number: ");
-				scanf("%*c%[^\n]", &prf.PhoneNumber);
-				phonenum_valid(prf.PhoneNumber);
+				scanf("%*c%[^\n]", &prf7.PhoneNumber);
+				phonenum_valid(prf7.PhoneNumber);
 			}
 		}
 }
@@ -696,29 +731,19 @@ void phonenum_valid(char str[])
 int checkPhoneNumber(char pn[])
 {
  FILE *ct;
- struct check
- {
-	char FirstName[20];
-	char LastName[20];
-	char Company[20];
-	char PhoneNumber[12];
-	char Email[50];
-	char WorkingAddress[100];
-	char HomeAddress[100];
-	int day, month, year;
- }prf1;
+ struct contact prf8;
  ct = fopen("contact.txt", "r");
  while (fscanf(ct, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
- 					&prf1.FirstName,
-					&prf1.LastName,
-					&prf1.Company,
-					&prf1.PhoneNumber,
-					&prf1.Email,
-					&prf1.WorkingAddress,
-					&prf1.HomeAddress,
-					&prf1.day, &prf1.month, &prf1.year) == 10)
+ 					&prf8.FirstName,
+					&prf8.LastName,
+					&prf8.Company,
+					&prf8.PhoneNumber,
+					&prf8.Email,
+					&prf8.WorkingAddress,
+					&prf8.HomeAddress,
+					&prf8.day, &prf8.month, &prf8.year) == 10)
   	{
-	  if (strcmp(pn, prf1.PhoneNumber) == 0)
+	  if (strcmp(pn, prf8.PhoneNumber) == 0)
   		{
    		fclose(ct);
    		return 1;
@@ -733,26 +758,28 @@ int checkPhoneNumber(char pn[])
 int checkEmpty()
 {
 	int ch = 0;
+	struct contact prf9;
 	FILE *ct;
 	ct = fopen("contact.txt", "r");
 	while (fscanf(ct, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
- 					&prf.FirstName,
-					&prf.LastName,
-					&prf.Company,
-					&prf.PhoneNumber,
-					&prf.Email,
-					&prf.WorkingAddress,
-					&prf.HomeAddress,
-					&prf.day, &prf.month, &prf.year) == 10)
+ 					&prf9.FirstName,
+					&prf9.LastName,
+					&prf9.Company,
+					&prf9.PhoneNumber,
+					&prf9.Email,
+					&prf9.WorkingAddress,
+					&prf9.HomeAddress,
+					&prf9.day, &prf9.month, &prf9.year) == 10)
 	ch = 1;
 	fclose(ct);
 	return ch;
 }
 
 
-void selection_date_sort(int d[], int m[], int y[], int size)
+void selection_date_sort(int d[], int m[], int y[], char a[][20], int size)
 {
     int i, j, temp;
+	char tempc[20];
     for (i = 0; i < size - 1; i++)
         for (j = i+1; j < size; j++)
         {
@@ -769,6 +796,10 @@ void selection_date_sort(int d[], int m[], int y[], int size)
                     temp = d[i];
                     d[i] = d[j];
                     d[j] = temp;
+
+					strcpy(tempc, a[i]);
+					strcpy(a[i], a[j]);
+					strcpy(a[j], tempc);
         
                 }
             else if (y[i] == y[j] && m[i] < m[j])
@@ -784,6 +815,10 @@ void selection_date_sort(int d[], int m[], int y[], int size)
                     temp = d[i];
                     d[i] = d[j];
                     d[j] = temp;
+
+					strcpy(tempc, a[i]);
+					strcpy(a[i], a[j]);
+					strcpy(a[j], tempc);
         
         
                 }
@@ -800,6 +835,10 @@ void selection_date_sort(int d[], int m[], int y[], int size)
                     temp = d[i];
                     d[i] = d[j];
                     d[j] = temp;
+
+					strcpy(tempc, a[i]);
+					strcpy(a[i], a[j]);
+					strcpy(a[j], tempc);
         
                 }
         }
@@ -807,10 +846,32 @@ void selection_date_sort(int d[], int m[], int y[], int size)
 }
 
 
+HWND WINAPI GetConsoleWindowNT(void)
+{
+    //declare function pointer type
+    typedef HWND WINAPI(*GetConsoleWindowT)(void);
+    //declare one such function pointer
+    GetConsoleWindowT GetConsoleWindow;
+    //get a handle on kernel32.dll
+    HMODULE hk32Lib = GetModuleHandle(TEXT("KERNEL32.DLL"));
+    //assign procedure address to function pointer
+    GetConsoleWindow = (GetConsoleWindowT)GetProcAddress(hk32Lib
+    ,TEXT("GetConsoleWindow"));
+    //check if the function pointer is valid
+    //since the function is undocumented
+    if(GetConsoleWindow == NULL){
+        return NULL;
+    }
+    //call the undocumented function
+    return GetConsoleWindow();
+}
 
 
-
-
+void DisableResizeWindow()
+{
+    HWND hWnd = GetConsoleWindow();
+    SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SIZEBOX);
+}
 
 
 
