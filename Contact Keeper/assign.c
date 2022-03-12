@@ -180,26 +180,42 @@ void add_contact()
 
 	printf("| 1. First Name: ");
 	scanf("%[^\n]", &prf.FirstName);
+	while (strlen(prf.FirstName) == 0)
+		{
+		printf("| (?) You can not leave it emty! \n");
+		printf("| Re-enter First Name: ");
+		scanf("%*c%[^\n]", &prf.FirstName);
+		}
 
 
 	printf("| 2. Last Name: ");
 	scanf("%*c%[^\n]", &prf.LastName);
-
+	while (strlen(prf.LastName) == 0)
+		{
+		printf("| (?) You can not leave it emty! \n");
+		printf("| Re-enter Last Name: ");
+		scanf("%*c%[^\n]", &prf.LastName);
+		}
 
     printf("| 3. Company: ");
+	strcpy(prf.Company,"");
 	scanf("%*c%[^\n]", &prf.Company);
+	while (strlen(prf.Company) == 0)
+		{
+		printf("| (?) You can not leave it emty! \n");
+		printf("| Re-enter Company: ");
+		scanf("%*c%[^\n]", &prf.Company);
+		}
 
 
     printf("| 4. Phone number: ");
 	scanf("%*c%[^\n]", &prf.PhoneNumber);
-	printf("%s\n", prf.PhoneNumber);
 	while (checkPhoneNumber(prf.PhoneNumber) == 1)
 	{
 		
 		printf("| (?) Phone Number existed!\n");
 		printf("| Re-enter Phone Number: ");
 		scanf("%*c%[^\n]", &prf.PhoneNumber);
-		printf("%s\n", prf.PhoneNumber);
 
 	}
 	while (phonenum_valid(prf.PhoneNumber) == 0)
@@ -207,26 +223,44 @@ void add_contact()
 		printf("| (?) Invalid Phone Number!\n");
 		printf("| Re-enter your Phone Number: ");
 		scanf("%*c%[^\n]", &prf.PhoneNumber);
-		printf("%s\n", prf.PhoneNumber);
+		
 	}
 
 
 
     printf("| 5. Email: ");
+	strcpy(prf.Email,"");
 	scanf("%*c%[^\n]", &prf.Email);
+	while (strlen(prf.Email) == 0)
+		{
+		printf("| (?) You can not leave it emty! \n");
+		printf("| Re-enter Email: ");
+		scanf("%*c%[^\n]", &prf.Email);
+		}
 
 
     printf("| 6. Working Address: ");
 	scanf("%*c%[^\n]", &prf.WorkingAddress);
+	while (strlen(prf.WorkingAddress) == 0)
+		{
+		printf("| (?) You can not leave it emty! \n");
+		printf("| Re-enter Working Address: ");
+		scanf("%*c%[^\n]", &prf.WorkingAddress);
+		}
 
 
 	printf("| 7. Home Address: ");
 	scanf("%*c%[^\n]", &prf.HomeAddress);
+	while (strlen(prf.HomeAddress) == 0)
+		{
+		printf("| (?) You can not leave it emty! \n");
+		printf("| Re-enter Home Address: ");
+		scanf("%*c%[^\n]", &prf.HomeAddress);
+		}
 
 
 	printf("| 8. Birthday (dd/mm/yyyy): ");
 	BD: scanf("%d/%d/%d", &prf.day, &prf.month, &prf.year);
-	printf("%d %d %d\n", prf.day, prf.month, prf.year);
 	if (date_valid(prf.day, prf.month, prf.year) == 0)
     {
         printf("| (?) Your birthday is invalid or in wrong format!\n");
@@ -257,7 +291,7 @@ void display_contact()
  	FILE *ct;
  	ct = fopen("contact.txt", "r");
 
-	char a[20][20], b[20][20], temp[20];
+	char a[50][20], b[50][20], temp[20];
 	int count = 0, i, j;
 
 	while (fscanf(ct, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
