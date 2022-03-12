@@ -20,45 +20,34 @@ struct contact
 	int day, month, year;
 };
 
+HWND WINAPI GetConsoleWindowNT();
+
 void print_menu();
 void add_contact();
 void edit_contact();
 void delete_contact();
 void display_contact();
 void search_contact();
+void birthday_display();
+
 int date_valid();
 int phonenum_valid();
 int checkPhoneNumber();
 int checkEmpty();
-void birthday_display();
+
 void selection_date_sort();
-HWND WINAPI GetConsoleWindowNT();
 void DisableResizeWindow();
-
-
-void DisableCtrButton(bool Close, bool Min, bool Max)
-{
-    HWND hWnd = GetConsoleWindow();
-    HMENU hMenu = GetSystemMenu(hWnd, false);
-
-    if (Close == 1)
-        DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
-    if (Min == 1)
-        DeleteMenu(hMenu, SC_MINIMIZE, MF_BYCOMMAND);
-    if (Max == 1)
-        DeleteMenu(hMenu, SC_MAXIMIZE, MF_BYCOMMAND);
-}
+void DisableCtrButton(bool, bool, bool);
 
 
 
 int main()
 {
 	char choice;
+	HWND hWnd=GetConsoleWindowNT();
+    MoveWindow(hWnd,0,0,1040,500,TRUE);
 	do
-	{
-		// printf("\033[38;5;85m");
-		HWND hWnd=GetConsoleWindowNT();
-    	MoveWindow(hWnd,0,0,1040,500,TRUE);
+	{	
 		DisableResizeWindow();
 		DisableCtrButton(0,0,1);
         system("title XLR8@IA1701:~$ Contact Keeper");
@@ -130,7 +119,7 @@ int main()
 		if (choice != 'q')
 		{
 			printf(" -------------------------------------------------------------------------------------------------------------------------------------\n\n");
-			printf("Press Enter to back to main menu.");
+			printf(" Press Enter to back to main menu.");
 			getchar();
 		}
 	}
@@ -139,7 +128,7 @@ int main()
 	return 0;
 }
 
-
+//Main function
 
 void print_menu()
 {
@@ -711,6 +700,7 @@ void birthday_display()
 
 }
 
+//Support Function
 
 int date_valid(int dd, int mm, int yy)
 {
@@ -864,24 +854,18 @@ void selection_date_sort(int d[], int m[], int y[], char a[][20], int size)
 
 }
 
+//Decor Function
 
 HWND WINAPI GetConsoleWindowNT(void)
 {
-    //declare function pointer type
     typedef HWND WINAPI(*GetConsoleWindowT)(void);
-    //declare one such function pointer
     GetConsoleWindowT GetConsoleWindow;
-    //get a handle on kernel32.dll
     HMODULE hk32Lib = GetModuleHandle(TEXT("KERNEL32.DLL"));
-    //assign procedure address to function pointer
-    GetConsoleWindow = (GetConsoleWindowT)GetProcAddress(hk32Lib
-    ,TEXT("GetConsoleWindow"));
-    //check if the function pointer is valid
-    //since the function is undocumented
-    if(GetConsoleWindow == NULL){
+    GetConsoleWindow = (GetConsoleWindowT)GetProcAddress(hk32Lib, TEXT("GetConsoleWindow"));
+    if(GetConsoleWindow == NULL)
+	{
         return NULL;
     }
-    //call the undocumented function
     return GetConsoleWindow();
 }
 
@@ -891,6 +875,40 @@ void DisableResizeWindow()
     HWND hWnd = GetConsoleWindow();
     SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SIZEBOX);
 }
+
+
+void DisableCtrButton(bool Close, bool Min, bool Max)
+{
+    HWND hWnd = GetConsoleWindow();
+    HMENU hMenu = GetSystemMenu(hWnd, false);
+
+    if (Close == 1)
+        DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
+    if (Min == 1)
+        DeleteMenu(hMenu, SC_MINIMIZE, MF_BYCOMMAND);
+    if (Max == 1)
+        DeleteMenu(hMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -923,4 +941,4 @@ void DisableResizeWindow()
 
 
 /** Make by Pham Quoc Trung, Dang Truong An and Tran Trong Duc. Please do not copy!**/
-/** Copyright 2022, Pham Quoc Trung, All rights reserved.**/
+/** Copyright 2022, XLR8, All rights reserved.**/
