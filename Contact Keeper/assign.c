@@ -37,7 +37,7 @@ int main()
 	char choice;
 	do
 	{
-		printf("\033[38;5;255m");
+		printf("\033[38;5;231m");
         
         system("cls"); 
 		print_menu();
@@ -66,36 +66,39 @@ int main()
 				break;
 			case '2':
 				if (checkEmpty() == 0)
-					printf("| The contact is emty!\n\n");
+					printf("| (?) The contact is emty!\n\n");
 				else
 					edit_contact();
 					break;
 			case '3':
 				if (checkEmpty() == 0)
-					printf("| The contact is emty!\n\n");
+					printf("| (?) The contact is emty!\n\n");
 				else
 					delete_contact();
 					break;
 			case '4':
 				if (checkEmpty() == 0)
-					printf("| The contact is emty!\n\n");
+					printf("| (?) The contact is emty!\n\n");
 				else
 					display_contact();
 					break;
 			case '5':
 				if (checkEmpty() == 0)
-					printf("| The contact is emty!\n\n");
+					printf("| (?) The contact is emty!\n\n");
 				else
 					search_contact();
 					break;
 			case '6':
 				if (checkEmpty() == 0)
-					printf("| The contact is emty!\n\n");
+					printf("| (?) The contact is emty!\n\n");
 				else
 					birthday_display();
 					break;
 			case 'q':
 				system("cls");
+				break;
+			default:
+				printf("| (?) Invalid selection!\n\n");
 				break;
 
 
@@ -125,7 +128,6 @@ void print_menu()
 	printf("				  \\_____\\___/|_| |_|\\__\\__,_|\\___|\\__| |_|\\_\\___|\\___| .__/ \\___|_|    \n");
     printf("				                                                     | |               \n");
     printf("				        =[ PRF192 ASSIGNMENT ]                       |_|               \n");
-    // printf("        				=[ PRF192 ASSIGNMENT ]\n");
 	printf("        			+ -- -- =[ IA1701 FPT University ]\n");
 	printf("				+ -- -- =[ Pham Quoc Trung, Dang Truong An, Tran Trong Duc ]\n\n");
 	printf(" =====================================================================================================================================\n");
@@ -147,6 +149,7 @@ void print_menu()
 void add_contact()
 {
 	FILE *ct;
+	int check;
 
     ct = fopen("contact.txt", "a+");
 	
@@ -164,7 +167,14 @@ void add_contact()
 	
 
     printf("| 4. Phone number: ");
-	scanf("%*c%[^\n]", &prf.PhoneNumber);
+	PN: scanf("%*c%[^\n]", &prf.PhoneNumber);
+	check = checkPhoneNumber(prf.PhoneNumber);
+	if (check == 1)
+	{
+		printf("| (?) Phone Number invalid/existed!\n");
+		printf("|Re-enter Phone Number: ");
+		goto PN;
+	}
 	phonenum_valid(prf.PhoneNumber);
 	
 	
@@ -277,7 +287,7 @@ void search_contact()
  	scanf("%[^\n]c", &pn);
  	check = checkPhoneNumber(pn);
  	if (check == 0)
-  		printf("| The Phone Number is not available in the file\n", pn);
+  		printf("| (?) Your Phone Number is not available in the file!\n", pn);
  	else
  	{
   		ct = fopen("contact.txt", "r");
@@ -324,7 +334,7 @@ void edit_contact()
  	scanf("%[^\n]c", &pn);
  	check = checkPhoneNumber(pn);
  	if (check == 0)
-  		printf("| The Phone Number is not available in the file\n", pn);
+  		printf("| (?) Your Phone Number is not available in the file!\n", pn);
  	else
 	{
 		cto = fopen("contact.txt", "r");
@@ -460,7 +470,7 @@ void delete_contact()
  	scanf("%[^\n]c", &pn);
  	check = checkPhoneNumber(pn);
  	if (check == 0)
-  		printf("| The Phone Number is not available in the file!\n\n", pn);
+  		printf("| (?) Your Phone Number is not available in the file!\n\n", pn);
  	else
 	{
 		cto = fopen("contact.txt", "r");
@@ -534,7 +544,7 @@ void birthday_display()
 	scanf("%d", &x);
 	
 	if (x < 1 || x > 12)
-		printf("| Invalid month\n\n");
+		printf("| (?) Invalid month!\n\n");
 	else
 	{
 		
@@ -684,18 +694,29 @@ void phonenum_valid(char str[])
 int checkPhoneNumber(char pn[])
 {
  FILE *ct;
+ struct check
+ {
+	char FirstName[20];
+	char LastName[20];
+	char Company[20];
+	char PhoneNumber[12];
+	char Email[50];
+	char WorkingAddress[100];
+	char HomeAddress[100];
+	int day, month, year;
+ }prf1;
  ct = fopen("contact.txt", "r");
  while (fscanf(ct, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
- 					&prf.FirstName,
-					&prf.LastName,
-					&prf.Company,
-					&prf.PhoneNumber,
-					&prf.Email,
-					&prf.WorkingAddress,
-					&prf.HomeAddress,
-					&prf.day, &prf.month, &prf.year) == 10)
+ 					&prf1.FirstName,
+					&prf1.LastName,
+					&prf1.Company,
+					&prf1.PhoneNumber,
+					&prf1.Email,
+					&prf1.WorkingAddress,
+					&prf1.HomeAddress,
+					&prf1.day, &prf1.month, &prf1.year) == 10)
   	{
-	  if (strcmp(pn, prf.PhoneNumber) == 0)
+	  if (strcmp(pn, prf1.PhoneNumber) == 0)
   		{
    		fclose(ct);
    		return 1;
