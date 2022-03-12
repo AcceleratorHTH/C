@@ -119,7 +119,7 @@ int main()
 		if (choice != 'q')
 		{
 			printf(" -------------------------------------------------------------------------------------------------------------------------------------\n\n");
-			printf(" Press Enter to back to main menu.");
+			printf(" -+ Press Enter to back to main menu +-");
 			getchar();
 		}
 	}
@@ -704,7 +704,7 @@ void birthday_display()
 
 int date_valid(int dd, int mm, int yy)
 {
-   if(yy>=100 && yy<=9999){
+   if(yy>=1900 && yy<=2100){
       if(mm>=1 && mm<=12){
          if((dd>=1 && dd<=31) && (mm==1 || mm==3 || mm==5 || mm==7 || mm==8 || mm==10 || mm==12));
             else if((dd>=1 && dd<=30) && (mm==4 || mm==6 || mm==9 || mm==11));
