@@ -6,6 +6,7 @@
 #include <string.h>
 #include <ctype.h>
 
+
 struct contact
 {
 	char FirstName[20];
@@ -17,6 +18,7 @@ struct contact
 	char HomeAddress[100];
 	int day, month, year;
 }prf;
+
 
 void print_menu();
 void add_contact();
@@ -38,7 +40,7 @@ int main()
 	do
 	{
 		printf("\033[38;5;231m");
-        
+        system("title XLR8@IA1701:~$ Contact Keeper");
         system("cls"); 
 		print_menu();
 		scanf("%c%*c", &choice);
@@ -141,7 +143,7 @@ void print_menu()
 	printf("| q> Quit                                                                                                                             |\n");
 	printf("|                                                                                                                                     |\n");
 	printf("| Enter your choice (1/2/3/4/5/6/q):                                                                                                  |");
-	printf("\n -------------------------------------------------------------------------------------------------------------------------------------\033[A\r\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C\033[C");
+	printf("\n -------------------------------------------------------------------------------------------------------------------------------------\033[A\r\033[37C");
 
 }
 
