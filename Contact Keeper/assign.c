@@ -723,7 +723,7 @@ int date_valid(int dd, int mm, int yy) //Date validation: DD/MM/YYYY format
 }
 
 
-int phonenum_valid(char str[])  //Phone Number validation: a integer number of 9 to 10 digits
+int phonenum_valid(char str[])  //Phone Number validation: a integer number of 9 to 11 digits
 {
 	int i;
 	if (strlen(str) < 9 || strlen(str) > 11)
@@ -787,10 +787,10 @@ int checkEmpty() //Check if the contact file is emty or not
 }
 
 
-void selection_date_sort(int d[], int m[], int y[], char a[][20], int size) //Sort date
+void selection_date_sort(int d[], int m[], int y[], char a[][50], int size) //Sort date
 {
     int i, j, temp;
-	char tempc[20];
+	char tempc[50];
     for (i = 0; i < size - 1; i++)
         for (j = i+1; j < size; j++)
         {
