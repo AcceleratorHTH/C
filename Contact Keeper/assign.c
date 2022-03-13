@@ -45,12 +45,12 @@ int main()
 {
 	char choice;
 	HWND hWnd=GetConsoleWindowNT();
-    MoveWindow(hWnd,0,0,1040,500,TRUE);
+    MoveWindow(hWnd,0,0,1040,500,TRUE); // Move the console to position 0,0, width 1040, height 500
 	do
 	{	
-		DisableResizeWindow();
-		DisableCtrButton(0,0,1);
-        system("title XLR8@IA1701:~$ Contact Keeper");
+		DisableResizeWindow(); //Disable resize
+		DisableCtrButton(0,0,1); //Disable Maximize button
+        system("title XLR8@IA1701:~$ Contact Keeper"); // Add console title
         system("cls");
 		print_menu();
 		scanf("%c%*c", &choice);
@@ -128,6 +128,7 @@ int main()
 	return 0;
 }
 
+
 //Main function
 
 void print_menu()
@@ -159,7 +160,7 @@ void print_menu()
 }
 
 
-void add_contact()
+void add_contact()  //Add new contact
 {
 	FILE *ct;
 	struct contact prf;
@@ -171,7 +172,7 @@ void add_contact()
 	scanf("%[^\n]", &prf.FirstName);
 	while (strlen(prf.FirstName) == 0)
 		{
-		printf("| (?) You can not leave it emty! \n");
+		printf("| (?) You can not leave it emty! \n");  //Block press Enter only
 		printf("| Re-enter First Name: ");
 		scanf("%*c%[^\n]", &prf.FirstName);
 		}
@@ -249,12 +250,12 @@ void add_contact()
 
 
 	printf("| 8. Birthday (dd/mm/yyyy): ");
-	BD: scanf("%d/%d/%d", &prf.day, &prf.month, &prf.year);
-	if (date_valid(prf.day, prf.month, prf.year) == 0)
+	scanf("%d/%d/%d", &prf.day, &prf.month, &prf.year);
+	while (date_valid(prf.day, prf.month, prf.year) == 0)
     {
         printf("| (?) Your birthday is invalid or in wrong format!\n");
         printf("| Re-enter your Birthday: ");
-        goto BD;
+        scanf("%d/%d/%d", &prf.day, &prf.month, &prf.year);
 
     }
 
@@ -274,7 +275,7 @@ void add_contact()
 }
 
 
-void display_contact()
+void display_contact() //List all contacts in the table format (sort by name)
 {
 	struct contact prf1;
  	FILE *ct;
@@ -347,7 +348,7 @@ void display_contact()
 }
 
 
-void search_contact()
+void search_contact() //Search contact (by Phone Number)
 {
 	FILE *ct;
 	struct contact prf2;
@@ -394,7 +395,7 @@ void search_contact()
 }
 
 
-void edit_contact()
+void edit_contact() //Edit contact
 {
 	FILE *cto;
 	FILE *ctt;
@@ -530,7 +531,7 @@ void edit_contact()
 }
 
 
-void delete_contact()
+void delete_contact() //Delete contact (by Phone Number)
 {
 
 	FILE *cto;
@@ -604,7 +605,7 @@ void delete_contact()
 }
 
 
-void birthday_display()
+void birthday_display() //List all contacts with birthdays in a given month (sort by date) 
 {
 	FILE *cto;
 	FILE *ctt;
@@ -700,9 +701,10 @@ void birthday_display()
 
 }
 
+
 //Support Function
 
-int date_valid(int dd, int mm, int yy)
+int date_valid(int dd, int mm, int yy) //Date validation: DD/MM/YYYY format
 {
    if(yy>=1900 && yy<=2100){
       if(mm>=1 && mm<=12){
@@ -721,7 +723,7 @@ int date_valid(int dd, int mm, int yy)
 }
 
 
-int phonenum_valid(char str[])
+int phonenum_valid(char str[])  //Phone Number validation: a integer number of 9 to 10 digits
 {
 	int i;
 	if (strlen(str) < 9 || strlen(str) > 11)
@@ -737,7 +739,7 @@ int phonenum_valid(char str[])
 }
 
 
-int checkPhoneNumber(char pn[])
+int checkPhoneNumber(char pn[]) //Check if Phone Number is already existed in the file
 {
  FILE *ct;
  struct contact prf8;
@@ -764,7 +766,7 @@ int checkPhoneNumber(char pn[])
 }
 
 
-int checkEmpty()
+int checkEmpty() //Check if the contact file is emty or not
 {
 	int ch = 0;
 	struct contact prf9;
@@ -785,7 +787,7 @@ int checkEmpty()
 }
 
 
-void selection_date_sort(int d[], int m[], int y[], char a[][20], int size)
+void selection_date_sort(int d[], int m[], int y[], char a[][20], int size) //Sort date
 {
     int i, j, temp;
 	char tempc[20];
@@ -854,9 +856,10 @@ void selection_date_sort(int d[], int m[], int y[], char a[][20], int size)
 
 }
 
-//Decor Function
 
-HWND WINAPI GetConsoleWindowNT(void)
+//Decor Function( To make an environment that our assignment program display best)
+
+HWND WINAPI GetConsoleWindowNT(void) //Resize the console
 {
     typedef HWND WINAPI(*GetConsoleWindowT)(void);
     GetConsoleWindowT GetConsoleWindow;
@@ -870,14 +873,14 @@ HWND WINAPI GetConsoleWindowNT(void)
 }
 
 
-void DisableResizeWindow()
+void DisableResizeWindow() //Disable self resize
 {
     HWND hWnd = GetConsoleWindow();
     SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SIZEBOX);
 }
 
 
-void DisableCtrButton(bool Close, bool Min, bool Max)
+void DisableCtrButton(bool Close, bool Min, bool Max)  //Disable Minimize, Maximize or Close
 {
     HWND hWnd = GetConsoleWindow();
     HMENU hMenu = GetSystemMenu(hWnd, false);
@@ -891,8 +894,7 @@ void DisableCtrButton(bool Close, bool Min, bool Max)
 }
 
 
-
-
+// Enjoy our program!
 
 
 
