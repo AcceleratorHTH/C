@@ -537,7 +537,7 @@ void delete_contact() //Delete contact (by Phone Number)
 	FILE *cto;
 	FILE *ctt;
 	struct contact prf4;
-	int check, choice;
+	int check, choice, x;
 	char pn[12], pqt[12];
 	printf("\n| Enter the Phone Number of the contact you want to delete: ");
  	scanf("%[^\n]c", &pn);
@@ -575,9 +575,11 @@ void delete_contact() //Delete contact (by Phone Number)
 
 	fclose(cto);
 	fclose(ctt);
-	cto = fopen("contact.txt", "w");
-	ctt = fopen("temp_contact.txt", "r");
-	while (fscanf(ctt, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
+	cto = fopen("contact.txt", "r");
+		printf("\n -------------------------------------------------------------------------------------------------------------------------------------\n");
+		printf("|First Name   Last Name           Company   Phone Number                          Email   Working Address   Home Address     Birthday |\n");
+		printf(" -------------------------------------------------------------------------------------------------------------------------------------\n");
+  		while (fscanf(cto, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
  					&prf4.FirstName,
 					&prf4.LastName,
 					&prf4.Company,
@@ -586,7 +588,11 @@ void delete_contact() //Delete contact (by Phone Number)
 					&prf4.WorkingAddress,
 					&prf4.HomeAddress,
 					&prf4.day, &prf4.month, &prf4.year) == 10)
-			fprintf(cto, "%s|%s|%s|%s|%s|%s|%s|%02d/%02d/%d\n",
+  			{
+  	 			strcpy(pqt, prf4.PhoneNumber);
+   				if (strcmp(pqt, pn) == 0)
+   					{
+    				printf("|%10s %11s %17s %14s %30s %17s %14s   %02d/%02d/%d |\n",
 					prf4.FirstName,
 					prf4.LastName,
 					prf4.Company,
@@ -594,13 +600,43 @@ void delete_contact() //Delete contact (by Phone Number)
 					prf4.Email,
 					prf4.WorkingAddress,
 					prf4.HomeAddress,
-					prf4.day, prf4.month, prf4.year);
+					prf4.day, prf4.month, prf4.year );
+   					}
+  			}
+			printf(" -------------------------------------------------------------------------------------------------------------------------------------\n\n");
+  	fclose(cto);
+	printf("| (?) Do you really want to delete this contact? (1 for Yes, 0 for No): ");
+	scanf("%d", &x);
+	if (x == 1)
+	{
+		cto = fopen("contact.txt", "w");
+		ctt = fopen("temp_contact.txt", "r");
+		while (fscanf(ctt, "%20[^|]|%20[^|]|%20[^|]|%11[^|]|%50[^|]|%100[^|]|%100[^|]|%d/%d/%d%*c",
+						&prf4.FirstName,
+						&prf4.LastName,
+						&prf4.Company,
+						&prf4.PhoneNumber,
+						&prf4.Email,
+						&prf4.WorkingAddress,
+						&prf4.HomeAddress,
+						&prf4.day, &prf4.month, &prf4.year) == 10)
+				fprintf(cto, "%s|%s|%s|%s|%s|%s|%s|%02d/%02d/%d\n",
+						prf4.FirstName,
+						prf4.LastName,
+						prf4.Company,
+						prf4.PhoneNumber,
+						prf4.Email,
+						prf4.WorkingAddress,
+						prf4.HomeAddress,
+						prf4.day, prf4.month, prf4.year);
 
-	printf("\n| CONTACT DELETED\n\n");
-	fclose(cto);
-	fclose(ctt);
+		printf("\n| CONTACT DELETED\n\n");
+		fclose(cto);
+		fclose(ctt);
+	}
 	}
 	getchar();
+
 
 }
 
@@ -613,7 +649,7 @@ void birthday_display() //List all contacts with birthdays in a given month (sor
 	cto = fopen("contact.txt", "r");
 	ctt = fopen("temp_contact.txt", "w");
 	int x, d[20], m[20], y[20], count = 0, i;
-	char a[20][20];
+	char a[20][50];
 	printf("| Enter a month: ");
 	scanf("%d", &x);
 
